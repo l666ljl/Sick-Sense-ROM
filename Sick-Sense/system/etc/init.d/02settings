@@ -1,0 +1,146 @@
+#!/system/bin/sh.old
+
+insmod /system/lib/modules/perflock_disable.ko perflock_notifier_call_addr=0x`grep perflock_notifier_call /proc/kallsyms|cut -c1-8`;
+
+rm -f /cache/*.apk;
+rm -f /cache/*.tmp;
+rm -f /data/dalvik-cache/*.apk;
+rm -f /data/dalvik-cache/*.tmp;
+
+busybox rm -f /data/system/userbehavior.db;
+busybox chmod 400 /data/system/usagestats/;
+busybox chmod 400 /data/system/appusagestats/;
+
+busybox mount -o remount,ro,noatime,noauto_da_alloc,nodiratime,barrier=0,nobh /system;
+busybox mount -o remount,noatime,noauto_da_alloc,nodiratime,nodev,barrier=0,nobh /data;
+busybox mount -o remount,noatime,noauto_da_alloc,nodiratime,nodev,barrier=0,nobh /cache;
+
+export dirty_expire_centisecs=200;
+export dirty_writeback_centisecs=500;
+export sampling_rate=10000;
+export up_threshold=65;
+export oom_kill=false;
+export page_cluster=3;
+export intswapping=true;
+export dalvikheap=72;
+export READ_AHEAD_KB=2048;
+
+if [ $dalvikheap = "16m" ]; 
+then
+	echo "[!] Setting Dalvik VM Heapsize to 16mb." | tee -a $LOG_FILE;
+	setprop dalvik.vm.heapsize 16m;
+fi;
+if [ $dalvikheap = "24m" ]; 
+then
+	echo "[!] Setting Dalvik VM Heapsize to 24mb." | tee -a $LOG_FILE;
+	setprop dalvik.vm.heapsize 24m;
+fi;
+if [ $dalvikheap = "32m" ]; 
+then
+	echo "[!] Setting Dalvik VM Heapsize to 32mb." | tee -a $LOG_FILE;
+	setprop dalvik.vm.heapsize 32m;
+fi;
+if [ $dalvikheap = "48m" ]; 
+then
+	echo "[!] Setting Dalvik VM Heapsize to 48mb." | tee -a $LOG_FILE;
+	setprop dalvik.vm.heapsize 48m;
+fi;
+if [ $dalvikheap = "60m" ]; 
+then
+	echo "[!] Setting Dalvik VM Heapsize to 48mb." | tee -a $LOG_FILE;
+	setprop dalvik.vm.heapsize 60m;
+fi;
+if [ $dalvikheap = "72m" ]; 
+then
+	echo "[!] Setting Dalvik VM Heapsize to 48mb." | tee -a $LOG_FILE;
+	setprop dalvik.vm.heapsize 72m;
+fi;
+
+echo "[!] Setting Advanced System Variables." | tee -a $LOG_FILE;
+if [ -n ${page_cluster} ];
+	then echo ${page_cluster} > /proc/sys/vm/page-cluster;
+fi;
+
+if [ -n ${dirty_expire_centisecs} ];
+	then echo ${dirty_expire_centisecs} > /proc/sys/vm/dirty_expire_centisecs;
+fi; 
+
+if [ -n ${dirty_writeback_centisecs} ];
+	then echo ${dirty_writeback_centisecs} > /proc/sys/vm/dirty_writeback_centisecs;
+fi;
+
+if [ -n ${up_threshold} ];
+	then echo ${up_threshold} > /sys/devices/system/cpu/cpu0/cpufreq/ondemand/up_threshold;
+fi;
+
+if [ -n ${sampling_rate} ];
+	then echo ${sampling_rate} > /sys/devices/system/cpu/cpu0/cpufreq/ondemand/sampling_rate;
+fi;
+
+if [ -n $oom_kill ] && [ $oom_kill = "true" ]; 
+then
+	echo 1 > /proc/sys/vm/oom_kill_allocating_task;
+else
+	echo 0 > /proc/sys/vm/oom_kill_allocating_task;
+fi;
+
+if [ -e /sys/module/lowmemorykiller/parameters/adj ]; then
+	echo "0,1,2,4,7,15" > /sys/module/lowmemorykiller/parameters/adj;
+fi;
+
+if [ -e /sys/module/lowmemorykiller/parameters/minfree ]; then
+	echo "2560,4096,6144,12288,14336,18432" > /sys/module/lowmemorykiller/parameters/minfree;
+fi;
+
+if [ -e /proc/sys/vm/swappiness ]; then
+	echo "0" > /proc/sys/vm/swappiness;
+fi;
+
+if [ -e /proc/sys/vm/overcommit_memory ]; then
+	echo "1" > /proc/sys/vm/overcommit_memory;
+fi;
+
+if [ -e /sys/devices/virtual/bdi/179:0/read_ahead_kb ]; then
+    echo "3072" > /sys/devices/virtual/bdi/179:0/read_ahead_kb;
+fi;
+
+# Set io scheduler tweaks for mmc
+for i in `ls -1 /sys/block/mmcblk*` 
+do
+	echo "cfq" > $i/queue/scheduler;
+	echo "0" > $i/queue/rotational;
+	echo "512" > $i/queue/nr_requests;
+	echo ${READ_AHEAD_KB} > $i/queue/read_ahead_kb;
+done;
+# Set io scheduler tweaks for mmc0
+#device is not rotational
+echo "0" > /sys/block/mmcblk0/queue/rotational;
+#increase queue (128 default)
+echo "1024" > /sys/block/mmcblk0/queue/nr_requests;
+#scheduler
+echo "cfq" > /sys/block/mmcblk0/queue/scheduler;
+#readahead
+echo "1024" > /sys/block/mmcblk0/queue/read_ahead_kb;
+
+# Set io scheduler tweaks for mmc1
+#device is not rotational
+echo "0" > /sys/block/mmcblk1/queue/rotational;
+#increase queue (128 default)
+echo "1024" > /sys/block/mmcblk1/queue/nr_requests;
+#scheduler
+echo "cfq" > /sys/block/mmcblk1/queue/scheduler;
+#readahead
+echo "1024" > /sys/block/mmcblk1/queue/read_ahead_kb;
+
+# TWEAKS: for TCP read/write
+echo "6144 87380 524288" > /proc/sys/net/ipv4/tcp_wmem;
+echo "6144 87380 524288" > /proc/sys/net/ipv4/tcp_rmem;
+
+#other settings
+setprop ro.telephony.call_ring.delay 0;
+setprop ring.delay 0;
+#setprop windowsmgr.max_events_per_sec 100;
+setprop windowsmgr.support_rotation_270 true;
+setprop ro.HOME_APP_ADJ 1;
+setprop ro.HOME_APP_MEM 2048;
+setprop dalvik.vm.startheapsize 10m;

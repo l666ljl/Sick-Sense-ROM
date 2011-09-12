@@ -1,0 +1,447 @@
+#!/system/bin/sh
+#CPU Configurator-Conf Script
+#smokin1337
+
+VOC=`cat /system/etc/cpuconf/voc`
+
+voc ()
+{
+while echo
+	do
+echo "Configure VOC"
+	   echo -n "Please Enter Your Selection: "
+	   echo
+	   echo "1. Sleep Governor"
+	   echo
+	   echo "2. Sleep Max Freq"
+	   echo
+	   echo "3. Sleep Min Freq"
+	   echo
+	   echo "4. Wake Governor"
+	   echo
+	   echo "5. Wake Max Freq"
+	   echo
+	   echo "6. Wake Min Freq"
+	   echo
+	   echo "7. Return to Main Menu"
+	   echo
+	   echo -n "Please Enter Your Selection: "
+	   read selection
+	   case $selection in
+	   1) echo "Setting Sleep Governor"
+	      echo
+			echo "Available Governors"
+			echo "******************"
+			cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors | awk ' {for(i=1;i<=NF;++i) print x++ "\t" $i } '
+			echo "******************"
+		  echo "Current Sleep Governor:"
+		  cat /system/etc/virtuous_oc/sleep_governor
+		  echo -n "Please Enter Your Selection: "
+		  read setting
+	      if echo $setting | egrep -q '[0-5]'; then
+	      `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors | awk ' {for(i=1;i<=NF;++i) print x++ "\t" $i } ' | grep -w $setting | awk '{ print $2 }' > /system/etc/virtuous_oc/sleep_governor`
+	      echo "Done"
+	      echo -n "Press Enter to Continue"
+	      read key
+	      else 
+	      echo "Invalid Selection"
+	      echo
+	      echo "Press Enter to Continue"
+	      read key
+		  fi
+		  ;;
+	    2) echo "Setting Sleep Max Freq"
+		  echo "********************"
+	      echo "Current Sleep Max Frequency:"
+	      cat /system/etc/virtuous_oc/sleep_max_freq
+	      echo "Available Max Frequency:"
+	      cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq
+	      echo "Recommended Settings:"
+	      echo "1188000(stock) 1296000 1404000 1512000 1620000 1782000 1836000 1944000 2052000"
+	      echo "********************"
+		  echo -n "Please Enter Your Selection: "
+		  read setting
+	      if echo $setting | egrep -q '[0-9]'; then
+	      echo $setting > /system/etc/virtuous_oc/sleep_max_freq
+	      echo "Done"
+	      echo -n "Press Enter to Continue"
+	      read key
+	      else 
+	      echo "Invalid Selection"
+	      echo
+	      echo "Press Enter to Continue"
+	      read key
+		  fi
+		  ;;
+		3) echo "Setting Sleep Min Freq"
+		  echo "********************"
+		  echo "Current Sleep Min Frequency:"
+	      cat /system/etc/virtuous_oc/sleep_min_freq
+	      echo "Available Min Frequency:"
+	      cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_min_freq
+	      echo "Recommended Settings:"
+	      echo "192000 384000 432000 486000 540000 594000 648000 702000 756000 810000 864000 918000 972000 1026000 1080000 1134000 1188000(stock)"
+	      echo "********************"
+		  echo -n "Please Enter Your Selection: "
+		  read setting
+	      if echo $setting | egrep -q '[0-9]'; then
+	      echo $setting > /system/etc/virtuous_oc/sleep_min_freq
+	      echo "Done"
+	      echo -n "Press Enter to Continue"
+	      read key
+	      else 
+	      echo "Invalid Selection"
+	      echo
+	      echo "Press Enter to Continue"
+	      read key
+		  fi
+		  ;;
+		4) echo "Setting Wake Governor"
+			echo
+			echo "Available Governors"
+			echo "******************"
+			cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors | awk ' {for(i=1;i<=NF;++i) print x++ "\t" $i } '
+			echo "******************"
+		    echo "Current Wake Governor:"
+			cat /system/etc/virtuous_oc/wake_governor
+		  echo -n "Please Enter Your Selection: "
+		  read setting
+	      if echo $setting | egrep -q '[0-5]'; then
+	      `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors | awk ' {for(i=1;i<=NF;++i) print x++ "\t" $i } ' | grep -w $setting | awk '{ print $2 }' > /system/etc/virtuous_oc/wake_governor`
+	      echo "Done"
+	      echo -n "Press Enter to Continue"
+	      read key
+	      else 
+	      echo "Invalid Selection"
+	      echo
+	      echo "Press Enter to Continue"
+	      read key
+		  fi
+		  ;;
+		5) echo "Setting Wake Max Freq"
+		   echo "********************"
+	      echo "Current Wake Max Frequency:"
+	      cat /system/etc/virtuous_oc/wake_max_freq
+	      echo "Available Max Frequency:"
+	      cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq
+	      echo "Recommended Settings:"
+	      echo "1188000(stock) 1296000 1404000 1512000 1620000 1782000 1836000 1944000 2052000"
+	      echo "********************"
+		  echo -n "Please Enter Your Selection: "
+		  read setting
+	      if echo $setting | egrep -q '[0-9]'; then
+	      echo $setting > /system/etc/virtuous_oc/wake_max_freq
+	      echo "Done"
+	      echo -n "Press Enter to Continue"
+	      read key
+	      else 
+	      echo "Invalid Selection"
+	      echo
+	      echo "Press Enter to Continue"
+	      read key
+		  fi
+		  ;;
+		6) echo "Setting Wake Min Freq"
+		  echo "********************"
+		  echo "Current Wake Min Frequency:"
+	      cat /system/etc/virtuous_oc/wake_min_freq
+	      echo "Available Min Frequency:"
+	      cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_min_freq
+	      echo "Recommended Settings:"
+	      echo "192000 384000 432000 486000 540000 594000 648000 702000 756000 810000 864000 918000 972000 1026000 1080000 1134000 1188000(stock)"
+	      echo "********************"
+		  echo -n "Please Enter Your Selection: "
+		  read setting
+	      if echo $setting | egrep -q '[0-9]'; then
+	      echo $setting > /system/etc/virtuous_oc/wake_min_freq
+	      echo "Done"
+	      echo -n "Press Enter to Continue"
+	      read key
+	      else 
+	      echo "Invalid Selection"
+	      echo
+	      echo "Press Enter to Continue"
+	      read key
+		  fi
+		  ;;
+		7) pkill virtuous_oc
+		   /system/xbin/virtuous_oc
+     	   main
+		   ;;
+		*) voc 
+		  ;;
+		  esac
+done
+}
+
+main ()
+{
+echo "Welcome to SickSense Configurator"
+echo
+echo "By smokin1337"
+echo
+echo "Make a Selection"
+echo
+echo "1. Set CPU Governor"
+echo
+echo "2. Set Max CPU Frequency"
+echo
+echo "3. Set Min CPU Frequency"
+echo
+echo "4. Set up_threshold"
+echo
+echo "5. Set ignore_nice_load"
+echo
+echo "6. Enable/Disable Virtuous OC"
+echo
+echo "7. Configure Virtuous OC"
+echo
+echo "8. Turn Off CPU Configurator"
+echo
+echo "9. Exit"
+echo
+echo -n "Please Make a Selection: "
+
+read option
+
+case $option in
+
+	1) echo "*******************"
+	   echo "Available Governers:"
+	   cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors | awk ' {for(i=1;i<=NF;++i) print x++ "\t" $i } '
+	   echo "*******************"
+	   echo -n "Please Enter Your Selection..."
+	   read selection
+	   case $VOC in
+	   0) if echo $selection | egrep -q '[0-5]'; then
+	   echo `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors | awk ' {for(i=1;i<=NF;++i) print x++ "\t" $i } ' | grep -w $selection | awk '{ print $2 }' > /system/etc/cpuconf/scaling_governor`
+	   echo 1 > /system/etc/cpuconf/switch
+	   echo "Done"
+	   echo
+	   echo -n "Press Enter to Continue"
+	   read key
+	   main
+	   
+	   
+	   elif 
+	     
+		 echo $selection | egrep -q '[6-9]'; then
+	     echo "Invalid Selection"
+		 echo
+		 echo -n "Press Enter to Continue"
+	     read key
+	     main
+	   
+	   fi
+	    ;;
+		1) echo "Virtuous OC Must be DISABLED first"
+	      echo
+		  echo "Disable Now ? Y or N"
+		  read selection
+		  case $selection in
+	      y|Y)	echo 0 > /system/etc/cpuconf/voc
+	      pkill virtuous_oc
+		  echo "Virtuous OC Disabled"
+		  echo -n "Enter to continue..."
+          read key
+		  ;;
+	      n|N) echo "Enter to continue..."
+		  read key
+	      main
+		  ;;
+	      esac
+	   ;;
+	   esac
+	   ;;
+	 
+	2) echo "********************"
+	   echo "Current Max Frequency:"
+	   cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq
+	   echo "Available Max Frequency:"
+	   cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq
+	   echo "Recommended Settings:"
+	   echo "1188000(stock) 1296000 1404000 1512000 1620000 1782000 1836000 1944000 2052000"
+	   echo "********************"
+	   echo -n "Please Enter Your Selection: "
+	   read selection
+	   case $VOC in
+	   0) if echo $selection | egrep -q '[0-9]'; then
+	   echo $selection > /system/etc/cpuconf/scaling_max_freq
+	   echo 1 > /system/etc/cpuconf/switch
+	   echo "Done"
+	   echo -n "Press Enter to Continue"
+	   read key
+	   main
+	   else 
+	   echo "Invalid Selection"
+	   echo
+	   echo "Press Enter to Continue"
+	   read key
+	   main
+	   fi
+	   ;;
+	   1) echo "Virtuous OC Must be DISABLED first"
+	      echo
+		  echo "Disable Now ? Y or N"
+		  read selection
+		  case $selection in
+	      y|Y)	echo 0 > /system/etc/cpuconf/voc
+	      pkill virtuous_oc
+		  echo "Virtuous OC Disabled"
+		  echo -n "Enter to continue..."
+          read key
+		  main
+		  ;;
+	      n|N) echo "Enter to continue..."
+		  read key
+	      main
+		  ;;
+	      esac
+	   ;;
+	   esac
+	   ;;
+	  
+	3) echo "********************"
+	   echo "Current Min Frequency:"
+	   cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+	   echo "Available Min Frequency:"
+	   cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_min_freq
+	   echo "Recommended Settings:"
+	   echo "192000 384000 432000 486000 540000 594000 648000 702000 756000 810000 864000 918000 972000 1026000 1080000 1134000 1188000(stock)"
+	   echo "********************"
+	   echo -n "Please Enter Your Selection: "
+	   read selection
+	   case $VOC in
+	   0) if echo $selection | egrep -q '[0-9]'; then
+	   echo $selection > /system/etc/cpuconf/scaling_min_freq
+	   echo 1 > /system/etc/cpuconf/switch
+	   echo "Done"
+	   echo -n "Press Enter to Continue"
+	   read key 
+	   main
+	   else 
+	   echo "Invalid Selection"
+	   echo
+	   echo "Press Enter to Continue"
+	   read key
+	   main
+	   fi
+	   ;;
+	   1) echo "Virtuous OC Must be DISABLED first"
+	      echo
+		  echo "Disable Now ? Y or N"
+		  read selection
+		  case $selection in
+	      y|Y)	echo 0 > /system/etc/cpuconf/voc
+	      pkill virtuous_oc
+		  echo "Virtuous OC Disabled"
+		  echo -n "Enter to continue..."
+          read key
+		  main
+		  ;;
+	      n|N) echo "Enter to continue..."
+		  read key
+	      main
+		  ;;
+	      esac
+	   ;;
+	   esac
+	   ;;
+   
+	
+	4) echo "********************"
+	   echo "Set Up Threshold"
+	   echo "********************"
+	   echo -n "Please Enter Your Selection: "
+	   read selection
+	   if echo $selection | egrep -q '[0-9]'; then
+	   echo $selection > /system/etc/cpuconf/up_threshold
+	   echo 1 > /system/etc/cpuconf/set
+	   echo "Done"
+	   echo -n "Press Enter to Continue"
+	   read key
+	   main
+	   else 
+	   echo "Invalid Selection"
+	   echo
+	   echo "Press Enter to Continue"
+	   read key
+	   main
+	   fi
+	   ;;
+	
+	5) echo "********************"
+	   echo "Set Ignore Nice Load:"
+	   echo "********************"
+	   echo -n "Please Enter Your Selection: "
+	   read selection
+	   if echo $selection | egrep -q '[0-9]'; then
+	   echo $selection > /system/etc/cpuconf/ignore_nice_load
+	   echo "Done"
+	   echo -n "Press Enter to Continue"
+	   read key
+	   main
+	   else 
+	   echo "Invalid Selection"
+	   echo
+	   echo "Press Enter to Continue"
+	   read key
+	   main
+	   fi
+	   ;;
+	
+	6) echo "Enable/Disable Virtuous OC"
+	   echo
+	   echo "Current Setting:"
+	   cat /system/etc/cpuconf/voc
+	   echo
+	   echo "1=enabled 0=disabled"
+	   echo
+	   echo "1 = Enable 2 = Disable"
+	   echo
+	   echo "Enter your selection: "
+	   read selection
+	   case $selection in
+	   1)	echo 1 > /system/etc/cpuconf/voc
+	        /system/xbin/virtuous_oc
+			echo 0 > /system/etc/cpuconf/sample
+			echo "Virtuous OC Enabled"
+			echo -n "Enter to continue..."
+            read key
+			main
+			;;
+	   2) echo 0 > /system/etc/cpuconf/voc
+	        pkill virtuous_oc
+			echo "Virtuous OC Disabled"
+			echo -n "Enter to continue..."
+            read key
+			main
+			;;
+	   esac
+	   ;;
+	
+	7) voc
+	   ;;
+	8) echo "Turning Off"
+	   echo 0 > /system/etc/cpuconf/enable
+	   echo 0 > /system/etc/cpuconf/voc
+	   echo "Done, Reboot Required"
+	   echo -n "Reboot Now ? Y or N "
+	   read selection
+	   case $selection in
+	   y|Y)	/system/etc/cpuconf/reboot
+	   ;;
+	   n|N) echo "Enter to continue..."
+			read key
+			main
+			esac
+	   ;;
+	   
+	9) /system/xbin/cpuconf
+	   exit
+	   ;;
+	*) main
+	;;
+	   esac	  
+}
+main

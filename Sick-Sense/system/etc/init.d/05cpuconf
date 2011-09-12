@@ -1,0 +1,10 @@
+#!/system/bin/sh
+#CPU Configurator-Startup
+#smokin1337
+
+		/system/xbin/cpuconf
+	
+	VOC=`cat /system/etc/cpuconf/voc`
+	if [ "$VOC" = 1 ]; then
+		/system/xbin/virtuous_oc
+	fi
